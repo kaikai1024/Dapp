@@ -1,11 +1,133 @@
 import React from 'react';
 import styles from "../style.css";
 import {Bond} from 'oo7';
-import {TextBond, Rspan} from 'oo7-react';
+import {RRaisedButton, TextBond, Rspan} from 'oo7-react';
+import {makeContract, formatBalance, isNullData} from 'oo7-parity';
+
+const orgABI = [
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "org",
+    "outputs": [
+      {
+        "name": "num",
+        "type": "uint256"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "property",
+        "type": "uint8"
+      },
+      {
+        "name": "principle",
+        "type": "string"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "num",
+        "type": "uint256"
+      }
+    ],
+    "name": "get_org",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }, {
+        "name": "",
+        "type": "string"
+      },
+      {
+        "name": "",
+        "type": "uint8"
+      },
+      {
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "num",
+        "type": "uint256"
+      },
+      {
+        "name": "name", "type": "string"
+      },
+      {
+        "name": "property",
+        "type": "uint8"
+      },
+      {
+        "name": "principle",
+        "type": "string"
+      }
+    ],
+    "name": "upload_org",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "payable": false,
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "num",
+        "type": "uint256"
+      }
+    ],
+    "name": "Upload_org",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "num",
+        "type": "uint256"
+      }
+    ],
+    "name": "Get_org",
+    "type": "event"
+  }
+];
 
 export class App extends React.Component {
     constructor() {
         super();
+        this.org = parity.bonds.makeContract('0x2D0f860846A3c890199dDf3fb2D6C19A48C3807C', orgABI);
         this.bond1 = new Bond();
         this.bond2 = new Bond();
         this.bond3 = new Bond();
@@ -17,6 +139,12 @@ export class App extends React.Component {
         this.bond25 = new Bond();
         this.bond26 = new Bond();
         this.bond27 = new Bond();
+        this.state = {current: null};
+    }
+    give() {
+        this.setState({
+            current:this.org.get_org(1) 
+        }) 
     }
 	render() {
 		return (
@@ -34,8 +162,16 @@ export class App extends React.Component {
                 <Rspan>{this.bond4}-</Rspan>
                 <br />
                 <br />
-                <input name="" type="button" value="upload"/>
+                <RRaisedButton 
+                    label="upload"
+                    onClick={this.give.bind(this)}
+                />
                 <br />
+                <br />
+                <Rspan>{this.state.current && this.state.current.map(JSON.stringify)}</Rspan>
+                <br />
+                <Rspan>{this.user}</Rspan>
+                <Rspan>{this.node1}</Rspan>
                 <br />
                 <b>infomation:</b>
                 <br />
@@ -58,9 +194,10 @@ export class App extends React.Component {
                 <Rspan>{this.bond27}-</Rspan>
                 <br />
                 <br />
-                <input name="" type="button" value="upload"/>
+                <RRaisedButton 
+                    label="upload"
+                    onClick={() =>alert("hello world")}
+                />
 		    </div>);
-//                <Rspan>{this.bond}</Rspan>
-//                <Rspan>{parity.bonds.height}</Rspan>
 	}
 }
